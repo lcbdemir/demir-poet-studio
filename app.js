@@ -3,37 +3,56 @@ const STORAGE_KEY = "demir-poet-studio";
 const author = document.getElementById("author");
 const date = document.getElementById("date");
 const linesContainer = document.getElementById("lines");
-const analysisContent = document.getElementById("analysisContent");
-const addLineBtn = document.getElementById("addLine");
+const fileInput = document.getElementById("fileInput");
 
-const tabs = document.querySelectorAll(".tab");
-const contents = document.querySelectorAll(".tab-content");
-
-tabs.forEach(tab => {
-  tab.addEventListener("click", () => {
-    tabs.forEach(t => t.classList.remove("active"));
-    contents.forEach(c => c.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById(tab.dataset.tab).classList.add("active");
-    if (tab.dataset.tab === "analysis") updateAnalysis();
-  });
-});
+/* =========================
+   MÉTRICA
+========================= */
 
 function countSyllables(word) {
+  word = word.toLowerCase();
+  if (word.length <= 3) return 1;
+
   const vowels = "aeiouáéíóúü";
   let count = 0;
-  let prev = false;
-  for (let c of word.toLowerCase()) {
-    const isVowel = vowels.includes(c);
-    if (isVowel && !prev) count++;
-    prev = isVowel;
+  let prevVowel = false;
+
+  for (let char of word) {
+    const isVowel = vowels.includes(char);
+    if (isVowel && !prevVowel) count++;
+    prevVowel = isVowel;
   }
-  return Math.max(count, 1);
+  return count;
 }
 
-function lineSyllables(text) {
-  return text.split(/\s+/).reduce((a, w) => a + countSyllables(w), 0);
+function lineSyllables(line) {
+  const words = line.trim().split(/\s+/);
+  if (!words[0]) return 0;
+
+  let total = 0;
+
+  for (let i = 0; i < words.length; i++) {
+    total += countSyllables(words[i]);
+
+    if (
+      i < words.length - 1 &&
+      /[aeiouáéíóúü]$/i.test(words[i]) &&
+      /^[aeiouáéíóúü]/i.test(words[i + 1])
+    ) {
+      total--;
+    }
+  }
+
+  const last = words.at(-1);
+  if (/[áéíóú]$/.test(last)) total++;
+  if (/[áéíóú][^aeiouáéíóú]+$/.test(last)) total--;
+
+  return total;
 }
+
+/* =========================
+   EDITOR
+========================= */
 
 function createLine(text = "") {
   const line = document.createElement("div");
@@ -41,6 +60,7 @@ function createLine(text = "") {
 
   const metric = document.createElement("div");
   metric.className = "metric";
+  metric.textContent = "0";
 
   const verse = document.createElement("div");
   verse.className = "verse";
@@ -53,64 +73,101 @@ function createLine(text = "") {
   });
 
   line.append(metric, verse);
-  linesContainer.appendChild(line);
+  return line;
 }
 
-function updateAnalysis() {
-  analysisContent.innerHTML = "";
-  document.querySelectorAll(".verse").forEach(v => {
-    const text = v.textContent;
-    const syllables = text.split(/\s+/).map(w =>
-      w.split("").join("·")
-    ).join(" ");
-    analysisContent.innerHTML +=
-      `<div class="analysis-line">${syllables} (${lineSyllables(text)})</div>`;
-  });
-}
+/* =========================
+   GUARDADO
+========================= */
 
 function save() {
   const verses = [...document.querySelectorAll(".verse")].map(v => v.textContent);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+  const data = {
     author: author.value,
     date: date.value,
     verses
-  }));
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
 function load() {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  author.value = data.author || "";
-  date.value = data.date || "";
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+  author.value = saved.author || "";
+  date.value = saved.date || "";
+
   linesContainer.innerHTML = "";
-  (data.verses || [""]).forEach(createLine);
+
+  if (saved.verses && saved.verses.length) {
+    saved.verses.forEach(t => linesContainer.appendChild(createLine(t)));
+  } else {
+    linesContainer.appendChild(createLine(""));
+  }
 }
 
-addLineBtn.onclick = () => createLine("");
-author.oninput = save;
-date.oninput = save;
+/* =========================
+   PEGADO DESDE WORD / WEB
+========================= */
 
-load();
-linesContainer.addEventListener("paste", e => {
+document.addEventListener("paste", e => {
+  const active = document.activeElement;
+  if (!active || !active.classList.contains("verse")) return;
+
   e.preventDefault();
 
-  const text = (e.clipboardData || window.clipboardData)
-    .getData("text");
+  const text = e.clipboardData.getData("text");
 
-  // Normalizar saltos
   const lines = text
     .replace(/\r/g, "")
     .split("\n")
     .map(l => l.trim())
-    .filter(l => l.length > 0);
+    .filter(Boolean);
 
-  if (lines.length === 0) return;
-
-  // borrar líneas actuales
   linesContainer.innerHTML = "";
-
-  lines.forEach(line => {
-    linesContainer.appendChild(createLine(line));
-  });
+  lines.forEach(l => linesContainer.appendChild(createLine(l)));
 
   save();
 });
+
+/* =========================
+   ENTER = NUEVO VERSO
+========================= */
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    linesContainer.appendChild(createLine(""));
+  }
+});
+
+/* =========================
+   IMPORTAR TXT
+========================= */
+
+fileInput.addEventListener("change", () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result
+      .replace(/\r/g, "")
+      .split("\n")
+      .map(l => l.trim())
+      .filter(Boolean);
+
+    linesContainer.innerHTML = "";
+    lines.forEach(l => linesContainer.appendChild(createLine(l)));
+
+    save();
+  };
+
+  reader.readAsText(file, "utf-8");
+});
+
+/* ========================= */
+
+author.addEventListener("input", save);
+date.addEventListener("input", save);
+
+load();
