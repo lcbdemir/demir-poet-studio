@@ -77,3 +77,12 @@ main {
 
 .verse:focus {
   border-b
+.import {
+  padding: 0 1rem 1rem;
+  font-size: 0.9rem;
+}
+
+.import input {
+  display: block;
+  margin-top: 0.4rem;
+}
