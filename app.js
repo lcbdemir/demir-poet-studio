@@ -1,8 +1,8 @@
+const STORAGE_KEY = "demir-poet-studio-lines";
+
 const author = document.getElementById("author");
 const date = document.getElementById("date");
 const linesContainer = document.getElementById("lines");
-
-const STORAGE_KEY = "demir-poet-studio-lines";
 
 function countSyllables(word) {
   word = word.toLowerCase();
@@ -29,7 +29,6 @@ function lineSyllables(line) {
   for (let i = 0; i < words.length; i++) {
     total += countSyllables(words[i]);
 
-    // sinalefa simple
     if (
       i < words.length - 1 &&
       /[aeiouáéíóúü]$/i.test(words[i]) &&
@@ -39,10 +38,9 @@ function lineSyllables(line) {
     }
   }
 
-  // ajuste por palabra final
   const last = words.at(-1);
-  if (/[áéíóú]$/.test(last)) total++;              // aguda
-  if (/[áéíóú][^aeiouáéíóú]+$/.test(last)) total--; // esdrújula
+  if (/[áéíóú]$/.test(last)) total++;
+  if (/[áéíóú][^aeiouáéíóú]+$/.test(last)) total--;
 
   return total;
 }
@@ -86,9 +84,16 @@ function load() {
   date.value = saved.date || "";
 
   linesContainer.innerHTML = "";
-  (saved.verses || [""]).forEach(text => {
-    linesContainer.appendChild(createLine(text));
-  });
+
+  if (saved.verses && saved.verses.length > 0) {
+    saved.verses.forEach(text => {
+      linesContainer.appendChild(createLine(text));
+    });
+  } else {
+    const line = createLine("");
+    linesContainer.appendChild(line);
+    line.querySelector(".verse").focus();
+  }
 }
 
 document.addEventListener("keydown", e => {
