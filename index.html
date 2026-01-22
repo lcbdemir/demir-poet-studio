@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Demir Poet’s Studio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Demir Poet's Studio</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -15,27 +14,30 @@
 </header>
 
 <section class="meta">
-  <input id="author" placeholder="Autor">
-  <input id="date" type="date">
+  <input id="author" placeholder="Autor" />
+  <input id="date" type="date" />
 </section>
-<div class="import">
-  <label>
-    📄 Importar poema (.txt)
-    <input type="file" id="fileInput" accept=".txt">
-  </label>
-</div>
 
-<section class="controls">
-  Tamaño del texto
-  <input type="range" id="fontSize" min="14" max="28" value="18">
-</section>
+<nav class="tabs">
+  <button class="tab active" data-tab="editor">Editor</button>
+  <button class="tab" data-tab="analysis">Análisis</button>
+</nav>
 
 <main>
-  <div id="lines"></div>
+  <!-- EDITOR -->
+  <section id="editor" class="tab-content active">
+    <div id="lines"></div>
+    <button id="addLine">＋ Nuevo verso</button>
+  </section>
+
+  <!-- ANALISIS -->
+  <section id="analysis" class="tab-content">
+    <div id="analysisContent"></div>
+  </section>
 </main>
 
 <footer>
-  ✦ poesía viva en español ✦
+  Demir Poet’s Studio · PWA
 </footer>
 
 <script src="app.js"></script>
