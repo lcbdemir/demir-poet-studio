@@ -15,7 +15,12 @@ body {
 
 header {
   text-align: center;
-  padding: 1rem;
+  padding: 1.2rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
 }
 
 .slogan {
@@ -36,72 +41,47 @@ header {
   border: 1px solid #ccc;
 }
 
-.tabs {
-  display: flex;
-  margin: 1rem;
-  gap: 0.5rem;
+.import {
+  padding: 0 1rem 1rem;
+  font-size: 0.9rem;
 }
 
-.tab {
-  flex: 1;
-  padding: 0.6rem;
-  border-radius: 10px;
-  border: none;
-  background: #ddd;
-  cursor: pointer;
+main {
+  padding: 0 1rem 1rem;
 }
 
-.tab.active {
-  background: var(--indigo);
-  color: white;
-}
-
-.tab-content {
-  display: none;
+.editor {
+  background: white;
+  border-radius: 12px;
   padding: 1rem;
-  position: relative;
-}
-
-.tab-content.active {
-  display: block;
-  pointer-events: auto;
-}
-
-
-.tab-content.active {
-  display: block;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 .line {
   display: grid;
-  grid-template-columns: 50px 1fr;
-  gap: 8px;
+  grid-template-columns: 45px 1fr;
+  gap: 10px;
+  align-items: baseline;
   margin-bottom: 4px;
 }
 
 .metric {
   text-align: right;
   opacity: 0.6;
+  font-size: 0.9rem;
+  user-select: none;
 }
 
 .verse {
   outline: none;
   min-height: 1.4em;
+  line-height: 1.4;
+  white-space: pre-wrap;
 }
 
-#addLine {
-  margin-top: 1rem;
-  padding: 0.5rem;
-  border-radius: 10px;
-  border: none;
-  background: var(--amber);
-  cursor: pointer;
-}
-
-.analysis-line {
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-}
-#editor, #analysis {
-  pointer-events: auto;
+footer {
+  text-align: center;
+  padding: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--amber);
 }
