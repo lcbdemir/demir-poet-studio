@@ -167,3 +167,31 @@ author.addEventListener("input", save);
 date.addEventListener("input", save);
 
 load();
+const fileInput = document.getElementById("fileInput");
+
+fileInput.addEventListener("change", () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = e => {
+    const text = e.target.result;
+
+    const lines = text
+      .replace(/\r/g, "")
+      .split("\n")
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
+
+    linesContainer.innerHTML = "";
+
+    lines.forEach(line => {
+      linesContainer.appendChild(createLine(line));
+    });
+
+    save();
+  };
+
+  reader.readAsText(file, "utf-8");
+});
