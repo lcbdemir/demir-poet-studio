@@ -2,33 +2,34 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Demir Poet’s Studio</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#2b1c4d">
-
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <header>
-    <h1>Demir Poet’s Studio</h1>
-    <p class="slogan">El taller donde el poema aprende a respirar</p>
-  </header>
 
-  <section class="meta">
-    <input id="author" type="text" placeholder="Nombre del autor">
-    <input id="date" type="date">
-  </section>
+<header>
+  <h1>Demir Poet’s Studio</h1>
+  <div class="slogan">El taller donde el poema aprende a respirar</div>
+</header>
 
-<main class="editor">
-  <div id="lines"></div>
+<section class="meta">
+  <input id="author" placeholder="Autor" />
+  <input id="date" type="date" />
+</section>
+
+<main>
+  <div id="editor">
+    <div id="lines"></div>
+  </div>
 </main>
 
-  <footer>
-    <span id="status">Guardado automático activado</span>
-  </footer>
+<footer>
+  Escribe. Respira. Reescribe.
+</footer>
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
