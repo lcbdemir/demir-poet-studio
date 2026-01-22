@@ -1,4 +1,4 @@
-const STORAGE_KEY = "demir-poet-studio-lines";
+const STORAGE_KEY = "demir-poet-studio";
 
 const author = document.getElementById("author");
 const date = document.getElementById("date");
@@ -85,10 +85,8 @@ function load() {
 
   linesContainer.innerHTML = "";
 
-  if (saved.verses && saved.verses.length > 0) {
-    saved.verses.forEach(text => {
-      linesContainer.appendChild(createLine(text));
-    });
+  if (saved.verses?.length) {
+    saved.verses.forEach(v => linesContainer.appendChild(createLine(v)));
   } else {
     const line = createLine("");
     linesContainer.appendChild(line);
