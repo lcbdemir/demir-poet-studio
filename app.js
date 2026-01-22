@@ -13,12 +13,12 @@ function countSyllables(word) {
 
   const vowels = "aeiouáéíóúü";
   let count = 0;
-  let prevVowel = false;
+  let prev = false;
 
-  for (let char of word) {
-    const isVowel = vowels.includes(char);
-    if (isVowel && !prevVowel) count++;
-    prevVowel = isVowel;
+  for (let c of word) {
+    const isVowel = vowels.includes(c);
+    if (isVowel && !prev) count++;
+    prev = isVowel;
   }
   return count;
 }
@@ -32,7 +32,6 @@ function lineSyllables(line) {
   for (let i = 0; i < words.length; i++) {
     total += countSyllables(words[i]);
 
-    // sinalefa básica
     if (
       i < words.length - 1 &&
       /[aeiouáéíóúü]$/i.test(words[i]) &&
@@ -49,7 +48,7 @@ function lineSyllables(line) {
   return total;
 }
 
-/* ================= EDITOR ================= */
+/* ================= LÍNEAS ================= */
 
 function createLine(text = "") {
   const line = document.createElement("div");
@@ -57,7 +56,7 @@ function createLine(text = "") {
 
   const metric = document.createElement("div");
   metric.className = "metric";
-  metric.textContent = "0";
+  metric.textContent = lineSyllables(text);
 
   const verse = document.createElement("div");
   verse.className = "verse";
@@ -69,21 +68,60 @@ function createLine(text = "") {
     save();
   });
 
+  verse.addEventListener("paste", handlePaste);
+
   line.append(metric, verse);
   return line;
 }
 
-/* ================= GUARDADO ================= */
+/* ================= PEGADO (WORD FIX) ================= */
+
+function handlePaste(e) {
+  e.preventDefault();
+
+  const text = (e.clipboardData || window.clipboardData)
+    .getData("text")
+    .replace(/\r/g, "")
+    .trim();
+
+  if (!text) return;
+
+  const verses = text
+    .split(/\n{1,}/)
+    .map(v => v.trim())
+    .filter(v => v.length);
+
+  const currentLine = e.target.closest(".line");
+  const index = [...linesContainer.children].indexOf(currentLine);
+
+  currentLine.remove();
+
+  verses.forEach((v, i) => {
+    const line = createLine(v);
+    linesContainer.insertBefore(
+      line,
+      linesContainer.children[index + i] || null
+    );
+  });
+
+  save();
+}
+
+/* ================= GUARDAR / CARGAR ================= */
 
 function save() {
-  const verses = [...document.querySelectorAll(".verse")].map(v => v.textContent);
-  const data = {
-    author: author.value,
-    date: date.value,
-    verses,
-    fontSize: fontSizeControl.value
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const verses = [...document.querySelectorAll(".verse")]
+    .map(v => v.textContent);
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      author: author.value,
+      date: date.value,
+      verses,
+      fontSize: fontSizeControl.value
+    })
+  );
 }
 
 function load() {
@@ -91,13 +129,10 @@ function load() {
 
   author.value = saved.author || "";
   date.value = saved.date || "";
-
   linesContainer.innerHTML = "";
 
   if (saved.verses && saved.verses.length) {
-    saved.verses.forEach(text => {
-      linesContainer.appendChild(createLine(text));
-    });
+    saved.verses.forEach(v => linesContainer.appendChild(createLine(v)));
   } else {
     linesContainer.appendChild(createLine(""));
   }
