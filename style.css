@@ -15,12 +15,7 @@ body {
 
 header {
   text-align: center;
-  padding: 1.2rem;
-}
-
-h1 {
-  margin: 0;
-  font-size: 2rem;
+  padding: 1rem;
 }
 
 .slogan {
@@ -41,48 +36,62 @@ h1 {
   border: 1px solid #ccc;
 }
 
-.controls {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+.tabs {
+  display: flex;
+  margin: 1rem;
+  gap: 0.5rem;
 }
 
-main {
+.tab {
+  flex: 1;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: var(--indigo);
+  color: white;
+}
+
+.tab-content {
+  display: none;
   padding: 1rem;
 }
 
-/* ---- Editor verso por verso ---- */
+.tab-content.active {
+  display: block;
+}
 
 .line {
   display: grid;
-  grid-template-columns: 42px 1fr;
-  gap: 6px;
-  align-items: center;
-  margin-bottom: 2px;
+  grid-template-columns: 50px 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .metric {
   text-align: right;
-  font-size: 0.85rem;
   opacity: 0.6;
-  user-select: none;
 }
 
 .verse {
   outline: none;
   min-height: 1.4em;
-  line-height: 1.4;
-  padding: 2px 4px;
-  border-bottom: 1px solid rgba(43,28,77,0.3);
 }
 
-.verse:focus {
-  border-b
-.import {
-  padding: 0 1rem 1rem;
-  font-size: 0.9rem;
+#addLine {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+  border: none;
+  background: var(--amber);
+  cursor: pointer;
 }
 
-.import input {
-  display: block;
-  margin-top: 0.4rem;
+.analysis-line {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
 }
