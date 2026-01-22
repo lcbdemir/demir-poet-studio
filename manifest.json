@@ -1,7 +1,7 @@
 {
   "name": "Demir Poet’s Studio",
   "short_name": "Demir Poet",
-  "start_url": "/demir-poet-studio/",
+"start_url": "./"
   "display": "standalone",
   "background_color": "#f3e8ff",
   "theme_color": "#5b4b8a",
