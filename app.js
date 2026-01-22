@@ -3,6 +3,9 @@ const STORAGE_KEY = "demir-poet-studio";
 const author = document.getElementById("author");
 const date = document.getElementById("date");
 const linesContainer = document.getElementById("lines");
+const fontSizeControl = document.getElementById("fontSize");
+
+/* ================= MÉTRICA ================= */
 
 function countSyllables(word) {
   word = word.toLowerCase();
@@ -29,6 +32,7 @@ function lineSyllables(line) {
   for (let i = 0; i < words.length; i++) {
     total += countSyllables(words[i]);
 
+    // sinalefa básica
     if (
       i < words.length - 1 &&
       /[aeiouáéíóúü]$/i.test(words[i]) &&
@@ -44,6 +48,8 @@ function lineSyllables(line) {
 
   return total;
 }
+
+/* ================= EDITOR ================= */
 
 function createLine(text = "") {
   const line = document.createElement("div");
@@ -67,12 +73,15 @@ function createLine(text = "") {
   return line;
 }
 
+/* ================= GUARDADO ================= */
+
 function save() {
   const verses = [...document.querySelectorAll(".verse")].map(v => v.textContent);
   const data = {
     author: author.value,
     date: date.value,
-    verses
+    verses,
+    fontSize: fontSizeControl.value
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
@@ -85,20 +94,38 @@ function load() {
 
   linesContainer.innerHTML = "";
 
-  if (saved.verses?.length) {
-    saved.verses.forEach(v => linesContainer.appendChild(createLine(v)));
+  if (saved.verses && saved.verses.length) {
+    saved.verses.forEach(text => {
+      linesContainer.appendChild(createLine(text));
+    });
   } else {
-    const line = createLine("");
-    linesContainer.appendChild(line);
-    line.querySelector(".verse").focus();
+    linesContainer.appendChild(createLine(""));
   }
+
+  const size = saved.fontSize || 18;
+  fontSizeControl.value = size;
+  updateFontSize(size);
 }
+
+/* ================= CONTROLES ================= */
 
 document.addEventListener("keydown", e => {
   if (e.key === "Enter") {
     e.preventDefault();
-    linesContainer.appendChild(createLine());
+    linesContainer.appendChild(createLine(""));
+    updateFontSize(fontSizeControl.value);
   }
+});
+
+function updateFontSize(size) {
+  document.querySelectorAll(".verse").forEach(v => {
+    v.style.fontSize = size + "px";
+  });
+}
+
+fontSizeControl.addEventListener("input", e => {
+  updateFontSize(e.target.value);
+  save();
 });
 
 author.addEventListener("input", save);
