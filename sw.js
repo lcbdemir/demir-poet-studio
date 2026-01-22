@@ -1,19 +1,24 @@
+const CACHE = "demir-poet-v2";
+
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open("demir-poet-v1").then(cache => {
-      return cache.addAll([
+    caches.open(CACHE).then(cache =>
+      cache.addAll([
         "./",
         "./index.html",
         "./manifest.json"
-      ]);
-    })
+      ])
+    )
   );
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
