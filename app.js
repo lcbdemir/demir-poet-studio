@@ -1,3 +1,4 @@
+const metrics = document.getElementById("metrics");
 const poem = document.getElementById("poem");
 const author = document.getElementById("author");
 const date = document.getElementById("date");
