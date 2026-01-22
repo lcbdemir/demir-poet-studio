@@ -59,7 +59,14 @@ header {
 .tab-content {
   display: none;
   padding: 1rem;
+  position: relative;
 }
+
+.tab-content.active {
+  display: block;
+  pointer-events: auto;
+}
+
 
 .tab-content.active {
   display: block;
@@ -94,4 +101,7 @@ header {
 .analysis-line {
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
+}
+#editor, #analysis {
+  pointer-events: auto;
 }
