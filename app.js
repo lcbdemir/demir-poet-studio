@@ -1,33 +1,9 @@
-const metrics = document.getElementById("metrics");
-const poem = document.getElementById("poem");
 const author = document.getElementById("author");
 const date = document.getElementById("date");
+const linesContainer = document.getElementById("lines");
 
-const STORAGE_KEY = "demir-poet-studio";
+const STORAGE_KEY = "demir-poet-studio-lines";
 
-function save() {
-  const data = {
-    poem: poem.value,
-    author: author.value,
-    date: date.value
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function load() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) return;
-  const data = JSON.parse(saved);
-  poem.value = data.poem || "";
-  author.value = data.author || "";
-  date.value = data.date || "";
-}
-
-poem.addEventListener("input", save);
-author.addEventListener("input", save);
-date.addEventListener("input", save);
-
-load();
 function countSyllables(word) {
   word = word.toLowerCase();
   if (word.length <= 3) return 1;
@@ -63,19 +39,66 @@ function lineSyllables(line) {
     }
   }
 
-  // ajuste por acento final
-  if (/[áéíóú]$/.test(words.at(-1))) total++;
-  if (/[áéíóú][^aeiouáéíóú]*$/.test(words.at(-1))) total--;
+  // ajuste por palabra final
+  const last = words.at(-1);
+  if (/[áéíóú]$/.test(last)) total++;              // aguda
+  if (/[áéíóú][^aeiouáéíóú]+$/.test(last)) total--; // esdrújula
 
   return total;
 }
 
-function updateMetrics() {
-  const lines = poem.value.split("\n");
-  metrics.innerHTML = lines
-    .map(line => `<div>${lineSyllables(line)}</div>`)
-    .join("");
+function createLine(text = "") {
+  const line = document.createElement("div");
+  line.className = "line";
+
+  const metric = document.createElement("div");
+  metric.className = "metric";
+  metric.textContent = "0";
+
+  const verse = document.createElement("div");
+  verse.className = "verse";
+  verse.contentEditable = true;
+  verse.textContent = text;
+
+  verse.addEventListener("input", () => {
+    metric.textContent = lineSyllables(verse.textContent);
+    save();
+  });
+
+  line.append(metric, verse);
+  return line;
 }
 
-poem.addEventListener("input", updateMetrics);
-updateMetrics();
+function save() {
+  const verses = [...document.querySelectorAll(".verse")].map(v => v.textContent);
+  const data = {
+    author: author.value,
+    date: date.value,
+    verses
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function load() {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+  author.value = saved.author || "";
+  date.value = saved.date || "";
+
+  linesContainer.innerHTML = "";
+  (saved.verses || [""]).forEach(text => {
+    linesContainer.appendChild(createLine(text));
+  });
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    linesContainer.appendChild(createLine());
+  }
+});
+
+author.addEventListener("input", save);
+date.addEventListener("input", save);
+
+load();
