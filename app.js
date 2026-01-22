@@ -90,3 +90,27 @@ author.oninput = save;
 date.oninput = save;
 
 load();
+linesContainer.addEventListener("paste", e => {
+  e.preventDefault();
+
+  const text = (e.clipboardData || window.clipboardData)
+    .getData("text");
+
+  // Normalizar saltos
+  const lines = text
+    .replace(/\r/g, "")
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l.length > 0);
+
+  if (lines.length === 0) return;
+
+  // borrar líneas actuales
+  linesContainer.innerHTML = "";
+
+  lines.forEach(line => {
+    linesContainer.appendChild(createLine(line));
+  });
+
+  save();
+});
