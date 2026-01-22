@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Demir Poet’s Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,18 +15,21 @@
 </header>
 
 <section class="meta">
-  <input id="author" placeholder="Autor" />
-  <input id="date" type="date" />
+  <input id="author" placeholder="Autor">
+  <input id="date" type="date">
+</section>
+
+<section class="controls">
+  Tamaño del texto
+  <input type="range" id="fontSize" min="14" max="28" value="18">
 </section>
 
 <main>
-  <div id="editor">
-    <div id="lines"></div>
-  </div>
+  <div id="lines"></div>
 </main>
 
 <footer>
-  Escribe. Respira. Reescribe.
+  ✦ poesía viva en español ✦
 </footer>
 
 <script src="app.js"></script>
