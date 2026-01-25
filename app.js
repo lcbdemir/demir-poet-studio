@@ -1,10 +1,11 @@
-const editor = document.getElementById("editor");
+const poem = document.getElementById("poem");
+const metrics = document.getElementById("metrics");
 const author = document.getElementById("author");
 const date = document.getElementById("date");
 
-const STORAGE_KEY = "demir-poet-studio-v01";
+const STORAGE_KEY = "demir-poet-studio-v02";
 
-// ---------- MÉTRICA BÁSICA ----------
+// -------- MÉTRICA BÁSICA ----------
 function countSyllables(word) {
   word = word.toLowerCase();
   const vowels = "aeiouáéíóúü";
@@ -19,8 +20,8 @@ function countSyllables(word) {
   return count || 1;
 }
 
-function lineSyllables(text) {
-  const words = text.trim().split(/\s+/);
+function lineSyllables(line) {
+  const words = line.trim().split(/\s+/);
   if (!words[0]) return 0;
 
   let total = 0;
@@ -36,72 +37,35 @@ function lineSyllables(text) {
   return total;
 }
 
-// ---------- EDITOR ----------
-function createLine(text = "") {
-  const line = document.createElement("div");
-  line.className = "line";
-
-  const metric = document.createElement("div");
-  metric.className = "metric";
-
-  const verse = document.createElement("textarea");
-  verse.className = "verse";
-  verse.rows = 1;
-  verse.value = text;
-
-  function update() {
-    verse.style.height = "auto";
-    verse.style.height = verse.scrollHeight + "px";
-    metric.textContent = lineSyllables(verse.value);
-    save();
-  }
-
-  verse.addEventListener("input", update);
-
-  verse.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const pos = verse.selectionStart;
-      const before = verse.value.slice(0, pos);
-      const after = verse.value.slice(pos);
-
-      verse.value = before;
-      update();
-
-      const next = createLine(after);
-      editor.insertBefore(next, line.nextSibling);
-      next.querySelector("textarea").focus();
-    }
-  });
-
-  line.append(metric, verse);
-  setTimeout(update, 0);
-  return line;
+// -------- ACTUALIZAR MÉTRICA ----------
+function updateMetrics() {
+  const lines = poem.innerText.split("\n");
+  metrics.innerHTML = lines
+    .map(l => `<div>${lineSyllables(l)}</div>`)
+    .join("");
+  save();
 }
 
-// ---------- GUARDADO ----------
+// -------- GUARDAR ----------
 function save() {
   const data = {
     author: author.value,
     date: date.value,
-    verses: [...document.querySelectorAll(".verse")].map(v => v.value)
+    poem: poem.innerText
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
+// -------- CARGAR ----------
 function load() {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   author.value = saved.author || "";
   date.value = saved.date || "";
-  editor.innerHTML = "";
-
-  if (saved.verses && saved.verses.length) {
-    saved.verses.forEach(v => editor.appendChild(createLine(v)));
-  } else {
-    editor.appendChild(createLine(""));
-  }
+  poem.innerText = saved.poem || "";
+  updateMetrics();
 }
 
+poem.addEventListener("input", updateMetrics);
 author.addEventListener("input", save);
 date.addEventListener("input", save);
 
