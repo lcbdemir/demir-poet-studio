@@ -1,1 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya:wght@400;600&display=swap');
+
+:root {
+  --ink: #2b1c4d;
+  --paper: #f4f1fa;
+  --accent: #f4b400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Alegreya', serif;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+header {
+  text-align: center;
+  padding: 1.2rem 1rem 0.6rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.slogan {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.meta {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 1rem 1rem;
+}
+
+.meta input {
+  flex: 1;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+}
+
+main {
+  padding: 0.5rem 1rem 1.5rem;
+}
+
+#line,
+#lines {
+  width: 100%;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.metric {
+  text-align: right;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  user-select: none;
+}
+
+.verse {
+  outline: none;
+  min-height: 1.4em;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.verse:empty::before {
+  content: "Escribe aquí…";
+  opacity: 0.3;
+}
+
+footer {
+  text-align: center;
+  padding: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--accent);
+}
 
