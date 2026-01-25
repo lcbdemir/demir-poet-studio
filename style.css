@@ -1,30 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Alegreya:wght@400;600&display=swap');
 
 :root {
-  --ink: #2b1c4d;
-  --paper: #f4f1fa;
-  --accent: #f4b400;
-}
-
-* {
-  box-sizing: border-box;
+  --indigo: #2b1c4d;
+  --lavender: #f4f1fa;
+  --amber: #f4b400;
 }
 
 body {
   margin: 0;
   font-family: 'Alegreya', serif;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--lavender);
+  color: var(--indigo);
 }
 
 header {
   text-align: center;
-  padding: 1.2rem 1rem 0.6rem;
+  padding: 1.2rem;
 }
 
 h1 {
   margin: 0;
-  font-size: 2rem;
 }
 
 .slogan {
@@ -35,7 +30,7 @@ h1 {
 .meta {
   display: flex;
   gap: 0.5rem;
-  padding: 0 1rem 1rem;
+  padding: 0 1rem;
 }
 
 .meta input {
@@ -43,49 +38,41 @@ h1 {
   padding: 0.6rem;
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-family: inherit;
 }
 
 main {
-  padding: 0.5rem 1rem 1.5rem;
-}
-
-#line,
-#lines {
-  width: 100%;
+  padding: 1rem;
 }
 
 .line {
   display: grid;
-  grid-template-columns: 42px 1fr;
-  gap: 8px;
-  align-items: baseline;
-  margin-bottom: 2px;
+  grid-template-columns: 50px 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
 .metric {
   text-align: right;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   opacity: 0.6;
   user-select: none;
 }
 
 .verse {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1.1rem;
+  border: none;
+  background: transparent;
+  resize: none;
   outline: none;
-  min-height: 1.4em;
   line-height: 1.4;
-  white-space: pre-wrap;
-}
-
-.verse:empty::before {
-  content: "Escribe aquí…";
-  opacity: 0.3;
 }
 
 footer {
   text-align: center;
   padding: 0.6rem;
-  font-size: 0.85rem;
-  color: var(--accent);
+  font-size: 0.9rem;
+  color: var(--amber);
 }
-
